@@ -1,18 +1,23 @@
 	
 	VNS.resource.bootstrap.registerComponent('my component', (function(){
 		
-		function _changeBorderStyle(elm, color){
-			elm.setStyle({'border' : '3px solid ' + color});
+		function _changeStatus(elm, status){
+			
+			elm
+				.addClassName(status == 'loading' ? 'loading' : 'loaded')
+				.removeClassName(status == 'loading' ? 'loaded' : 'loading')
+			;
 		}
 		
 		return {
 			'immediate callback' : function(event, ref){
 				console.info('$my_component > do it immediately / ' + event.timeStamp);
-				_changeBorderStyle(ref.primitive, 'green');
+				_changeStatus(ref.primitive, 'loading');
 			},
 			'deferred callback' : function(event, ref){
 				console.info('$my_component > do it after load / ' + event.timeStamp);
-				_changeBorderStyle(ref.primitive, 'red');
+				ref.primitive.innerHTML = "<img src=\"img/water.jpg\" width=\"50\" height=\"50\" />";
+				_changeStatus(ref.primitive, 'done');
 			}
 		}
 		

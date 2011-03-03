@@ -4,58 +4,44 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     	<title>Bootstrap</title>
         <style>
-        	.red {color: red;}
-			#target, #target2 {float: left;}
+			.image-container {float: left; border-width: 3px; border-style: solid; border-color: #fff; width: 50px; height: 50px; cursor: pointer; background-color: #aaa;}
+			.image-container p {padding: 8px 5px 5px 0; color: #FFF; margin: 0; text-align: center; font-size: 11px; font-family: Tahoma, Geneva, sans-serif;}
+			.clear {clear: both;}
+			.loading {background: #ccc url(img/loader.gif) center center no-repeat;}
+			.loading p,
+			.loaded p {display: none;}
+			.message {padding-top: 10px;}
         </style>
         <script>var VNS = {context : {brand : 'viadeo', scriptsVersion : '1023'}};</script>
         <script src="../lib/viadeocommon.js"></script>
 		<script src="../lib/bootstrap.js"></script>
-        <script>
-			// blocking script from Steve Souders http://stevesouders.com/cuzillion/ 
-			var gTop = Number(new Date());
-			function scriptSleepOnload(sUrl) {
-				var now = Number(new Date());
-				var msg = "<nobr>" + (now - gTop) + "ms: \"" + sUrl + "\" done</nobr>\n";
-				if ( document.getElementById('loadedscripts') ) {
-					document.getElementById('loadedscripts').innerHTML += msg;
-				}
-				else {
-					gScriptMsg += msg;
-				}
-			}
-		</script>
     </head>
     <body>
         
     	<div id="target" 
+        	class="image-container"
         	data-event="click" 
             data-type="component" 
             data-name="my component"
             data-url="components/component.js"
-        >
-    		<img src="img/water.jpg" width="50" height="50" />
-        </div>
+        ><p>click here</p></div>
         
-        <div id="target2" 
-        	data-event="click" 
-            data-type="component" 
-            data-name="my component 2"
-            data-url="components/component2.js"
-        >
-            <img src="img/water.jpg" width="50" height="50" />
-        </div>
+        <p class="clear message">
         
-        <div id="loadedscripts" style="clear:both;"></div>
+            5 seconds before dom load...
+            
+            <script>
+                (function(){
+					// lets take a few seconds before dom finishes to load
+                    var i = 0;
+                    for(; i<4; i++){
+                        document.write('<scr' + 'ipt type="text/javascript" src="js/booooooringJS.php"></sc' + 'ript>');
+                    }
+                    document.write(' done !!!');
+                }());
+            </script>
         
-        <script>
-			(function(){
-				var i = 0;
-				for (; i<200; i++){ document.getElementById('loadedscripts').innerHTML += '<span>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span><br />'; }
-			}());
-        </script>
-        
-        
-        <script>(function(){ var injs_now = Number(new Date()); while( injs_now + (5*1000) > Number(new Date()) ) { var tmp = injs_now; } if ( 'function' == typeof(scriptSleepOnload) ) scriptSleepOnload('inline script'); }());</script>  
+        </p>
         
     </body>
 </html>
