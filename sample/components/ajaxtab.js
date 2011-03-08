@@ -9,55 +9,43 @@
 			_xhrDone = false,
 			_xhrResponse = '',
 			_domLoaded = false,
-			_prim = null
+			_prim = undefined
 		;
 		
+		function _setLoader(status){_prim.down('.' + _pl_prfx + 'dynamic_content')[status ? 'addClassName' : 'removeClassName']('loading');}
+		
 		function _updateDynPanel(){
-			if(_domLoaded){
-				_prim.down('.' + _pl_prfx + 'dynamic_content')
-					.update(_xhrResponse)
-					.removeClassName('loading')
-				;
-			}
+			_prim.down('.' + _pl_prfx + 'dynamic_content').update(_xhrResponse);
+			_setLoader(false);
 		}
 		
 		function _recordResponse(response){
-			_xhrDone = true;
 			_xhrResponse = response;
-			if(_domLoaded){
-				 _updateDynPanel();
-			}
+			if(_domLoaded){ _updateDynPanel(); }
 		}
 		
 		function _makeRequest(){
-			if(!_xhrDone){
-				new Ajax.Request('ajax/tab-content.php', {
-					onSuccess : function(transport){ _recordResponse(transport.responseText); },
-					onFailure : function(){ _xhrDone = false; }
-				});
-			}
+			_setLoader(true);
+			new Ajax.Request('ajax/tab-content.php', {
+				onSuccess : function(transport){  _recordResponse(transport.responseText); _xhrDone = true; },
+				onFailure : function(){ _xhrDone = false; }
+			});
 		}
 		
-		function _switchTab(prim, s){
+		function _switchTab(s){
 			// css update
-			_prim = prim;
 			_prim.select('.tab').each(function(t){t.removeClassName('current');});
 			_prim.down('.' + _tb_prfx + s).addClassName('current');
 			_prim.select('.panel').each(function(t){t.addClassName('elsewhere');});
 			_prim.down('.' + _pl_prfx + s).removeClassName('elsewhere');
-			if(s === 'dynamic_content'){
-				_makeRequest();
-				_prim.down('.' + _pl_prfx + s).addClassName('loading');
-			}
+			if(s === 'dynamic_content' && !_xhrDone){ _makeRequest(); }
 		}
 		
 		return {
 			'immediate callback' : function(event, ref){
+				_prim = ref.primitive;
 				if(ref.target.hasClassName('tab')){
-					_switchTab(
-						ref.primitive,
-						ref.target.hasClassName(_tb_prfx + 'dynamic_content') ? 'dynamic_content' : 'home'
-					);
+					_switchTab(ref.target.hasClassName(_tb_prfx + 'dynamic_content') ? 'dynamic_content' : 'home');
 				}
 			},
 			'deferred callback' : function(event, ref){
